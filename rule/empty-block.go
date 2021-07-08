@@ -51,6 +51,10 @@ func (w lintEmptyBlock) Visit(node ast.Node) ast.Visitor {
 			}
 		}
 	case *ast.RangeStmt:
+		if n.Key == nil && n.Value == nil {
+			return nil // ignore this range (seems to be a channel draining iteration)
+		}
+
 		if len(n.Body.List) == 0 {
 			w.onFailure(lint.Failure{
 				Confidence: 0.9,
