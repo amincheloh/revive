@@ -56,8 +56,10 @@ func g(f func() bool) {
 	// issue 386
 	var c = make(chan int)
 	for range c { // DO NOT FAIL
+	for range c { // DO NOT FAIL
 	}
 
+	// But without types it skips this (too artificial?) one
 	// But without types it skips this (too artificial?) one
 	var s = "a string"
 	for range s { // DO NOT FAIL
