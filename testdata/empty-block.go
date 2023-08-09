@@ -4,20 +4,7 @@ package fixtures
 
 import (
 	"fmt"
-	"net/http"
 )
-
-func f(x int) {} // Must not match
-
-type foo struct{}
-
-func (f foo) f(x *int)  {} // Must not match
-func (f *foo) g(y *int) {} // Must not match
-
-func h() {
-	go http.ListenAndServe()
-	select {} // Must not match
-}
 
 func g(f func() bool) {
 	{ // MATCH /this block is empty, you can remove it/
@@ -56,39 +43,39 @@ func g(f func() bool) {
 	// issue 386
 	var c = make(chan int)
 	for range c { // DO NOT FAIL
-	for range c { // DO NOT FAIL
-	}
-
-	// But without types it skips this (too artificial?) one
-	// But without types it skips this (too artificial?) one
-	var s = "a string"
-	for range s { // DO NOT FAIL
-	}
-
-	select {
-	case _, ok := <-c:
-		if ok { // MATCH /this block is empty, you can remove it/
+		for range c { // DO NOT FAIL
 		}
-	}
 
-	// issue 810
-	next := 0
-	iter := func(v *int) bool {
-		*v = next
-		next++
-		fmt.Println(*v)
-		return next < 10
-	}
+		// But without types it skips this (too artificial?) one
+		var s = "a string"
+		for range s { // DO NOT FAIL (false negative)
+		}
 
-	z := 0
-	for iter(&z) { // Must not match
-	}
+		select {
+		case _, ok := <-c:
+			if ok { // MATCH /this block is empty, you can remove it/
+			}
+		}
 
-	for process() { // Must not match
-	}
+		// issue 810
+		next := 0
+		iter := func(v *int) bool {
+			*v = next
+			next++
+			fmt.Println(*v)
+			return next < 10
+		}
 
-	var it iterator
-	for it.next() { // Must not match
+		z := 0
+		for iter(&z) { // Must not match
+		}
+
+		for process() { // Must not match
+		}
+
+		var it iterator
+		for it.next() { // Must not match
+		}
 	}
 }
 

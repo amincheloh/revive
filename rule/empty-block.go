@@ -36,23 +36,20 @@ func (w lintEmptyBlock) Visit(node ast.Node) ast.Visitor {
 	switch n := node.(type) {
 	case *ast.FuncDecl:
 		w.ignore[n.Body] = true
-		return w
 	case *ast.FuncLit:
 		w.ignore[n.Body] = true
-		return w
 	case *ast.SelectStmt:
 		w.ignore[n.Body] = true
-		return w
 	case *ast.ForStmt:
 		if len(n.Body.List) == 0 && n.Init == nil && n.Post == nil && n.Cond != nil {
 			if _, isCall := n.Cond.(*ast.CallExpr); isCall {
 				w.ignore[n.Body] = true
-				return w
 			}
 		}
 	case *ast.RangeStmt:
 		if n.Key == nil && n.Value == nil {
-			return nil // ignore this range (seems to be a channel draining iteration)
+			w.ignore[n.Body] = true
+			return w // ignore this range (seems to be a channel draining iteration)
 		}
 
 		if len(n.Body.List) == 0 {
