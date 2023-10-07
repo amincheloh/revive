@@ -3,4 +3,5 @@
     description: Beautiful Go linter
     entry: revive
     language: golang
+    files: '\.go$'
 
