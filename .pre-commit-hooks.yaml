@@ -1,7 +1,8 @@
 -   id: revive
     name: revive
     description: Beautiful Go linter
-    entry: revive ./...
+    entry: revive
+    args: [./...]
     language: golang
     types: [go]
     require_serial: true
