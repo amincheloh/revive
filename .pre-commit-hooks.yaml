@@ -1,7 +1,8 @@
 -   id: revive
     name: revive
     description: Beautiful Go linter
-    entry: revive
+    entry: revive ./...
     language: golang
-    files: '\.go$'
-
+    types: [go]
+    require_serial: true
+    pass_filenames: false
